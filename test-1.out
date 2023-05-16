@@ -1,0 +1,468 @@
+CODE {
+ VDECL {
+  vtype
+  id
+  semi
+ }
+ CODE {
+  CDECL {
+   class
+   id
+   lbrace
+   ODECL
+   rbrace
+  }
+  CODE {
+   CDECL {
+    class
+    id
+    lbrace
+    ODECL {
+     VDECL {
+      vtype
+      id
+      semi
+     }
+     ODECL {
+      FDECL {
+       vtype
+       id
+       lparen
+       ARG {
+        vtype
+        id
+        MOREARGS {
+         comma
+         vtype
+         id
+         MOREARGS {
+          comma
+          vtype
+          id
+          MOREARGS
+         }
+        }
+       }
+       rparen
+       lbrace
+       BLOCK {
+        STMT {
+         ASSIGN {
+          id
+          assign
+          RHS {
+           literal
+          }
+         }
+         semi
+        }
+        BLOCK {
+         STMT {
+          if
+          lparen
+          COND {
+           COND {
+            COND {
+             boolstr
+            }
+            comp
+            boolstr
+           }
+           comp
+           boolstr
+          }
+          rparen
+          lbrace
+          BLOCK {
+           STMT {
+            while
+            lparen
+            COND {
+             boolstr
+            }
+            rparen
+            lbrace
+            BLOCK {
+             STMT {
+              VDECL {
+               vtype
+               id
+               semi
+              }
+             }
+             BLOCK {
+              STMT {
+               ASSIGN {
+                id
+                assign
+                RHS {
+                 EXPR {
+                  EXPR {
+                   TERM {
+                    TERM {
+                     FACTOR {
+                      num
+                     }
+                    }
+                    multdiv
+                    FACTOR {
+                     id
+                    }
+                   }
+                  }
+                  addsub
+                  TERM {
+                   FACTOR {
+                    lparen
+                    EXPR {
+                     TERM {
+                      FACTOR {
+                       lparen
+                       EXPR {
+                        EXPR {
+                         TERM {
+                          FACTOR {
+                           num
+                          }
+                         }
+                        }
+                        addsub
+                        TERM {
+                         FACTOR {
+                          num
+                         }
+                        }
+                       }
+                       rparen
+                      }
+                     }
+                    }
+                    rparen
+                   }
+                  }
+                 }
+                }
+               }
+               semi
+              }
+              BLOCK
+             }
+            }
+            rbrace
+           }
+           BLOCK
+          }
+          rbrace
+          ELSE {
+           else
+           lbrace
+           BLOCK
+           rbrace
+          }
+         }
+         BLOCK
+        }
+       }
+       RETURN {
+        return
+        RHS {
+         EXPR {
+          EXPR {
+           TERM {
+            TERM {
+             FACTOR {
+              num
+             }
+            }
+            multdiv
+            FACTOR {
+             id
+            }
+           }
+          }
+          addsub
+          TERM {
+           FACTOR {
+            num
+           }
+          }
+         }
+        }
+        semi
+       }
+       rbrace
+      }
+      ODECL {
+       VDECL {
+        vtype
+        id
+        semi
+       }
+       ODECL
+      }
+     }
+    }
+    rbrace
+   }
+   CODE {
+    VDECL {
+     vtype
+     ASSIGN {
+      id
+      assign
+      RHS {
+       EXPR {
+        EXPR {
+         TERM {
+          FACTOR {
+           num
+          }
+         }
+        }
+        addsub
+        TERM {
+         TERM {
+          FACTOR {
+           lparen
+           EXPR {
+            EXPR {
+             EXPR {
+              TERM {
+               FACTOR {
+                num
+               }
+              }
+             }
+             addsub
+             TERM {
+              TERM {
+               FACTOR {
+                num
+               }
+              }
+              multdiv
+              FACTOR {
+               id
+              }
+             }
+            }
+            addsub
+            TERM {
+             FACTOR {
+              lparen
+              EXPR {
+               TERM {
+                FACTOR {
+                 lparen
+                 EXPR {
+                  EXPR {
+                   TERM {
+                    FACTOR {
+                     num
+                    }
+                   }
+                  }
+                  addsub
+                  TERM {
+                   FACTOR {
+                    num
+                   }
+                  }
+                 }
+                 rparen
+                }
+               }
+              }
+              rparen
+             }
+            }
+           }
+           rparen
+          }
+         }
+         multdiv
+         FACTOR {
+          id
+         }
+        }
+       }
+      }
+     }
+     semi
+    }
+    CODE {
+     VDECL {
+      vtype
+      id
+      semi
+     }
+     CODE {
+      FDECL {
+       vtype
+       id
+       lparen
+       ARG
+       rparen
+       lbrace
+       BLOCK
+       RETURN {
+        return
+        RHS {
+         character
+        }
+        semi
+       }
+       rbrace
+      }
+      CODE {
+       FDECL {
+        vtype
+        id
+        lparen
+        ARG {
+         vtype
+         id
+         MOREARGS
+        }
+        rparen
+        lbrace
+        BLOCK {
+         STMT {
+          if
+          lparen
+          COND {
+           boolstr
+          }
+          rparen
+          lbrace
+          BLOCK {
+           STMT {
+            if
+            lparen
+            COND {
+             boolstr
+            }
+            rparen
+            lbrace
+            BLOCK {
+             STMT {
+              if
+              lparen
+              COND {
+               boolstr
+              }
+              rparen
+              lbrace
+              BLOCK
+              rbrace
+              ELSE
+             }
+             BLOCK {
+              STMT {
+               while
+               lparen
+               COND {
+                COND {
+                 boolstr
+                }
+                comp
+                boolstr
+               }
+               rparen
+               lbrace
+               BLOCK
+               rbrace
+              }
+              BLOCK {
+               STMT {
+                ASSIGN {
+                 id
+                 assign
+                 RHS {
+                  EXPR {
+                   EXPR {
+                    TERM {
+                     FACTOR {
+                      id
+                     }
+                    }
+                   }
+                   addsub
+                   TERM {
+                    FACTOR {
+                     id
+                    }
+                   }
+                  }
+                 }
+                }
+                semi
+               }
+               BLOCK
+              }
+             }
+            }
+            rbrace
+            ELSE {
+             else
+             lbrace
+             BLOCK {
+              STMT {
+               ASSIGN {
+                id
+                assign
+                RHS {
+                 EXPR {
+                  TERM {
+                   TERM {
+                    FACTOR {
+                     lparen
+                     EXPR {
+                      TERM {
+                       FACTOR {
+                        num
+                       }
+                      }
+                     }
+                     rparen
+                    }
+                   }
+                   multdiv
+                   FACTOR {
+                    id
+                   }
+                  }
+                 }
+                }
+               }
+               semi
+              }
+              BLOCK
+             }
+             rbrace
+            }
+           }
+           BLOCK
+          }
+          rbrace
+          ELSE
+         }
+         BLOCK
+        }
+        RETURN {
+         return
+         RHS {
+          boolstr
+         }
+         semi
+        }
+        rbrace
+       }
+       CODE
+      }
+     }
+    }
+   }
+  }
+ }
+}

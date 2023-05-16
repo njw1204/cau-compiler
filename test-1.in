@@ -1,0 +1,49 @@
+vtype id semi
+
+class id lbrace
+rbrace
+
+class id lbrace
+  vtype id semi
+
+  vtype id lparen vtype id comma vtype id comma vtype id rparen lbrace
+    id assign literal semi
+
+    if lparen boolstr comp boolstr comp boolstr rparen lbrace
+      while lparen boolstr rparen lbrace
+        vtype id semi
+        id assign num multdiv id addsub lparen lparen num addsub num rparen rparen semi
+      rbrace
+    rbrace else lbrace
+    rbrace
+
+    return num multdiv id addsub num semi
+  rbrace
+
+  vtype id semi
+rbrace
+
+vtype id assign num addsub lparen num addsub num multdiv id addsub lparen lparen num addsub num rparen rparen rparen multdiv id semi
+vtype id semi
+
+vtype id lparen rparen lbrace
+  return character semi
+rbrace
+
+vtype id lparen vtype id rparen lbrace
+  if lparen boolstr rparen lbrace
+    if lparen boolstr rparen lbrace
+      if lparen boolstr rparen lbrace
+      rbrace
+
+      while lparen boolstr comp boolstr rparen lbrace
+      rbrace
+
+      id assign id addsub id semi
+    rbrace else lbrace
+      id assign lparen num rparen multdiv id semi
+    rbrace
+  rbrace
+
+  return boolstr semi
+rbrace
