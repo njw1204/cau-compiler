@@ -24,6 +24,8 @@ class SyntaxTreeNode:
     def __str__(self):
         return "\n".join(self._build_pretty_strs(0))
 
+    # Syntax Tree 최종 파싱 결과를 문자열로 변환하는 메서드
+    # 자식 목록을 { } 로 감싸서 출력하며 인덴트로 계층 구분
     def _build_pretty_strs(self, indent):
         indent_marker = " "
 
@@ -39,6 +41,7 @@ class SyntaxTreeNode:
         else:
             return [indent_marker * indent + self.name]
 
+# SLR 파싱 과정에서 사용하는 스택 자료구조
 class SLRStack:
     def __init__(self):
         self.list = []
@@ -52,17 +55,21 @@ class SLRStack:
     def pop(self):
         return self.list.pop()
 
+# 특수 기호 선언
 epsilon = "e"
 endmarker = "$"
 
+# 터미널 선언
 terminals = """
 vtype,id,semi,assign,literal,character,boolstr,addsub,multdiv,lparen,rparen,num,lbrace,rbrace,comma,if,while,comp,else,return,class
 """.strip().split(",")
 
+# 논터미널 선언
 non_terminals = """
 S,CODE,VDECL,ASSIGN,RHS,EXPR,TERM,FACTOR,FDECL,ARG,MOREARGS,BLOCK,STMT,COND,ELSE,RETURN,CDECL,ODECL
 """.strip().split(",")
 
+# 프로덕션 룰 선언
 productions = list(map(lambda prodstr: prodstr.split(" -> "), """
 S -> CODE
 CODE -> VDECL CODE
@@ -105,6 +112,7 @@ ODECL -> FDECL ODECL
 ODECL -> {e}
 """.format(e=epsilon).strip().splitlines()))
 
+# SLR 파싱 테이블 선언
 goto_action_keys = terminals + [endmarker] + non_terminals
 goto_action_table = [{key: row[n] for n, key in enumerate(goto_action_keys)} for row in map(lambda rowstr: rowstr.split(","), """
 s 5,,,,,,,,,,,,,,,,,,,,s 6,r 4,,1,2,,,,,,3,,,,,,,,4,
@@ -195,46 +203,68 @@ s 53,s 54,,,,,,,,,,,,r 25,,s 51,s 52,,,r 25,,,,,49,50,,,,,,,,84,48,,,,,
 r 32,r 32,,,,,,,,,,,,r 32,,r 32,r 32,,,r 32,,,,,,,,,,,,,,,,,,,,
 """.strip().splitlines())]
 
+# 실행 인자 검사
 if len(sys.argv) < 2:
     print("Usage: python3 syntax_analyzer.py <input file>")
     sys.exit(1)
 
 input_path = sys.argv[1]
 
+# 소스 파일 존재 여부 검사
 if not os.path.isfile(input_path):
     print("[Error] No such file: '{}'".format(input_path))
     sys.exit(1)
 
 output_path = os.path.splitext(input_path)[0] + ".out"
+
 syntax_tree = SyntaxTree()
 slr_stack = SLRStack()
+
+# SLR 파싱은 초기 state 0번에서 시작
 slr_stack.push(SyntaxTreeNode(name="", state=0))
 
+# 다음 토큰을 하나씩 입력 받아 파싱을 진행하는 함수
+# 반환값: True(파싱 성공), False(파싱 오류)
 def process_decisions(token):
+    # 토큰 하나에 대한 파싱 과정이 끝날 때까지 반복
     while True:
+        # SLR 스택에서 현재 state 추출
+        # 현재 state에서 다음 token에 따라 decision 생성
         decision = goto_action_table[slr_stack.top().state][token]
 
-        if decision and decision[0] == "s":
+        if decision and decision[0] == "s": # decision이 shift인 경우
+            # Push the next state into the stack
             next_state = int(decision.split()[1])
             next_node = SyntaxTreeNode(name=token, state=next_state)
             slr_stack.push(next_node)
 
-            return True if token != endmarker else None
-        elif decision and decision[0] == "r":
+            # Move the splitter to the right
+            return True
+        elif decision and decision[0] == "r": # decision이 reduce인 경우
             production = productions[int(decision.split()[1])]
             production_from = production[0]
             production_to = production[1]
             production_size = len(production_to.split()) if production_to != epsilon else 0
 
+            # For A -> a, Pop |a| contents from the stack
             children = list(reversed([slr_stack.pop() for _ in range(production_size)]))
+
+            # For A -> a, Push GOTO(current state, A) into the stack
             next_state = int(goto_action_table[slr_stack.top().state][production_from])
             next_node = SyntaxTreeNode(name=production_from, state=next_state, children=children)
             slr_stack.push(next_node)
 
+            # 만약 이번에 A -> a라는 프로덕션 룰을 사용했다면, A를 Syntax Tree의 루트로 설정하고 a는 A의 자식으로 설정
+            # 코드를 끝까지 파싱하면 마지막에는 무조건 S -> CODE가 사용되며, 따라서 최종적으로 S가 Syntax Tree의 루트가 됨
+            # 나중에 Syntax Tree를 출력할 때는 루트인 S부터 시작해서 DFS로 전체 트리를 출력할 수 있음
             syntax_tree.set_root(next_node)
-        else:
+
+            # reduce를 사용했으므로 다음 토큰에 대해서 다시 파싱 진행
+            continue
+        else: # 그 외의 경우 (decision이 acc면 Accepted, 아니면 파싱 오류)
             return True if decision == "acc" else False
 
+# 결과 출력 및 저장 함수
 def output_result(result):
     print(result)
 
@@ -243,19 +273,32 @@ def output_result(result):
 
     print("\nOutput has been saved as '{}'".format(output_path))
 
+# 소스 파일을 읽으며 파싱 시작
 with open(input_path, "r") as file_in:
     for n, line in enumerate(file_in, 1):
         for m, token in enumerate(line.split(), 1):
+            # 다음 토큰을 하나씩 읽으며 파싱
+
             if token not in terminals:
+                # 정의되지 않은 토큰이 입력된 경우 (오타 등)
+                # 에러 리포트 출력 후 프로그램 종료
                 output_result("[Error] Unknown token at line {}, column {}: {}".format(n, m, token))
                 sys.exit(1)
 
+            # 토큰 파싱
             if not process_decisions(token):
+                # 문법상 현재 상태에서 해당 토큰이 나오면 안되는 경우
+                # 에러 리포트 출력 후 프로그램 종료
                 output_result("[Error] Unexpected token at line {}, column {}: {}".format(n, m, token))
                 sys.exit(1)
 
+# 마지막으로 문자열의 끝을 나타내는 특수 기호를 넣어 파싱
 if not process_decisions(endmarker):
+    # 문법상 현재 상태에서 문자열의 끝이 나오면 안되는 경우
+    # 에러 리포트 출력 후 프로그램 종료
     output_result("[Error] Unexpected EOF while parsing")
     sys.exit(1)
 
+# 파싱 성공
+# Syntax Tree 출력 및 저장
 output_result(str(syntax_tree))
