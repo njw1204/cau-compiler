@@ -17,6 +17,10 @@ class id lbrace
     rbrace else lbrace
     rbrace
 
+    if lparen boolstr rparen lbrace
+      id assign boolstr semi
+    rbrace
+
     return num multdiv id addsub num semi
   rbrace
 
@@ -28,22 +32,4 @@ vtype id semi
 
 vtype id lparen rparen lbrace
   return character semi
-rbrace
-
-vtype id lparen vtype id rparen lbrace
-  if lparen boolstr rparen lbrace
-    if lparen boolstr rparen lbrace
-      if lparen boolstr rparen lbrace
-      rbrace
-
-      while lparen boolstr comp boolstr rparen lbrace
-      rbrace
-
-      id assign id addsub id semi
-    rbrace else lbrace
-      id assign lparen num rparen multdiv id semi
-    rbrace
-  rbrace
-
-  return boolstr semi
 rbrace

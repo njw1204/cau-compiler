@@ -1,0 +1,146 @@
+CODE {
+ FDECL {
+  vtype
+  id
+  lparen
+  ARG {
+   vtype
+   id
+   MOREARGS
+  }
+  rparen
+  lbrace
+  BLOCK {
+   STMT {
+    if
+    lparen
+    COND {
+     boolstr
+    }
+    rparen
+    lbrace
+    BLOCK {
+     STMT {
+      if
+      lparen
+      COND {
+       boolstr
+      }
+      rparen
+      lbrace
+      BLOCK {
+       STMT {
+        if
+        lparen
+        COND {
+         boolstr
+        }
+        rparen
+        lbrace
+        BLOCK
+        rbrace
+        ELSE
+       }
+       BLOCK {
+        STMT {
+         while
+         lparen
+         COND {
+          COND {
+           boolstr
+          }
+          comp
+          boolstr
+         }
+         rparen
+         lbrace
+         BLOCK
+         rbrace
+        }
+        BLOCK {
+         STMT {
+          ASSIGN {
+           id
+           assign
+           RHS {
+            EXPR {
+             EXPR {
+              TERM {
+               FACTOR {
+                id
+               }
+              }
+             }
+             addsub
+             TERM {
+              FACTOR {
+               id
+              }
+             }
+            }
+           }
+          }
+          semi
+         }
+         BLOCK
+        }
+       }
+      }
+      rbrace
+      ELSE {
+       else
+       lbrace
+       BLOCK {
+        STMT {
+         ASSIGN {
+          id
+          assign
+          RHS {
+           EXPR {
+            TERM {
+             TERM {
+              FACTOR {
+               lparen
+               EXPR {
+                TERM {
+                 FACTOR {
+                  num
+                 }
+                }
+               }
+               rparen
+              }
+             }
+             multdiv
+             FACTOR {
+              id
+             }
+            }
+           }
+          }
+         }
+         semi
+        }
+        BLOCK
+       }
+       rbrace
+      }
+     }
+     BLOCK
+    }
+    rbrace
+    ELSE
+   }
+   BLOCK
+  }
+  RETURN {
+   return
+   RHS {
+    boolstr
+   }
+   semi
+  }
+  rbrace
+ }
+ CODE
+}
